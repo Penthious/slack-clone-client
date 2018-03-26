@@ -12,30 +12,27 @@ import {
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 
-class Login extends React.Component {
+class CreateTeam extends React.Component {
   constructor(props) {
     super(props);
 
     extendObservable(this, {
-      email: '',
-      password: '',
+      name: '',
       errors: {},
     });
   }
 
   onSubmit = async () => {
-    const { email, password } = this;
+    const { name } = this;
     const response = await this.props.mutate({
-      variables: { email, password },
+      variables: { name },
     });
 
     console.log(response);
 
-    const { ok, token, refreshToken, errors } = response.data.login;
+    const { ok, errors } = response.data.createTeam;
 
     if (ok) {
-      localStorage.setItem('token', token);
-      localStorage.setItem('refreshToken', refreshToken);
       this.props.history.push('/');
     } else {
       const err = {};
@@ -53,28 +50,18 @@ class Login extends React.Component {
   };
 
   render() {
-    const { email, password, errors: { emailError, passwordError } } = this;
+    const { name, errors: { nameError } } = this;
 
     return (
       <Container text>
-        <Header as="h2">Login</Header>
+        <Header as="h2">Create a Team</Header>
         <Form>
-          <Form.Field error={!!emailError}>
+          <Form.Field error={!!nameError}>
             <Input
-              name="email"
+              name="name"
               onChange={this.onChange}
-              value={email}
-              placeholder="Email"
-              fluid
-            />
-          </Form.Field>
-          <Form.Field error={!!passwordError}>
-            <Input
-              name="password"
-              onChange={this.onChange}
-              value={password}
-              type="password"
-              placeholder="Password"
+              value={name}
+              placeholder="Team Name"
               fluid
             />
           </Form.Field>
@@ -84,7 +71,7 @@ class Login extends React.Component {
           <Message
             error
             header="There was some errors with your submission"
-            list={[passwordError, emailError].filter(x => x)}
+            list={[nameError].filter(x => x)}
           />
         ) : null}
       </Container>
@@ -92,12 +79,10 @@ class Login extends React.Component {
   }
 }
 
-const loginMutation = gql`
-  mutation($email: String!, $password: String!) {
-    login(email: $email, password: $password) {
+const createTeamMutation = gql`
+  mutation($name: String!) {
+    createTeam(name: $name) {
       ok
-      token
-      refreshToken
       errors {
         path
         message
@@ -106,4 +91,4 @@ const loginMutation = gql`
   }
 `;
 
-export default graphql(loginMutation)(observer(Login));
+export default graphql(createTeamMutation)(observer(CreateTeam));
