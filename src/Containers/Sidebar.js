@@ -49,6 +49,7 @@ class Sidebar extends Component {
         <AddChannelModel
           open={this.state.openAddChannelModal}
           close={this.handleCloseAddChannelClick}
+          teamId={currentTeamId}
         />
       </Fragment>
     );
