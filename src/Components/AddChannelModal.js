@@ -4,6 +4,8 @@ import { withFormik } from 'formik';
 import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
 
+import { allTeamsQuery } from '../Graphql/team';
+
 const AddChannelModal = ({
   open,
   close,
@@ -44,7 +46,13 @@ const AddChannelModal = ({
 
 const createChannelMutation = gql`
   mutation($teamId: Int!, $name: String!) {
-    createChannel(teamId: $teamId, name: $name)
+    createChannel(teamId: $teamId, name: $name) {
+      ok
+      channel {
+        id
+        name
+      }
+    }
   }
 `;
 
@@ -58,6 +66,28 @@ export default compose(
     ) => {
       const response = await mutate({
         variables: { teamId, name: values.name },
+        optimisticResponse: {
+          createChannel: {
+            __typename: 'Mutation',
+            ok: true,
+            channel: {
+              __typename: 'Channel',
+              id: -1,
+              name: values.name,
+            },
+          },
+        },
+        update: (store, { data: { createChannel } }) => {
+          if (!createChannel.ok) {
+            return;
+          }
+
+          const data = store.readQuery({ query: allTeamsQuery });
+          data.allTeams
+            .filter(team => team.id === teamId)[0]
+            .channels.push(createChannel.channel);
+          store.writeQuery({ query: allTeamsQuery, data });
+        },
       });
 
       setSubmitting(false);

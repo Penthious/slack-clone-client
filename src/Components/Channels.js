@@ -1,10 +1,19 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Icon } from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
 
 const paddingLeft = 'padding-left: 10px';
 
-export default ({ teamName, username, channels, users, onAddChannelClick }) => (
+export default ({
+  teamName,
+  username,
+  channels,
+  users,
+  onAddChannelClick,
+  onInvitePeopleClick,
+  teamId,
+}) => (
   <ChannelWrapper>
     <PushLeft>
       <TeamNameHeader>{teamName}</TeamNameHeader>
@@ -15,7 +24,7 @@ export default ({ teamName, username, channels, users, onAddChannelClick }) => (
         <SideBarListHeader>
           Channels <Icon onClick={onAddChannelClick} name="add circle" />
         </SideBarListHeader>
-        {channels.map(Channel)}
+        {channels.map((c, i) => Channel(c, teamId))}
       </SideBarList>
     </div>
     <div>
@@ -24,11 +33,16 @@ export default ({ teamName, username, channels, users, onAddChannelClick }) => (
         {users.map(User)}
       </SideBarList>
     </div>
+    <div>
+      <a onClick={onInvitePeopleClick}>+ Invite People</a>
+    </div>
   </ChannelWrapper>
 );
 
-const Channel = ({ id, name }) => (
-  <SideBarListItem key={`channel-${id}`}># {name}</SideBarListItem>
+const Channel = ({ id, name }, teamId) => (
+  <Link key={`channel-${id}-${teamId}`} to={`/view-team/${teamId}/${id}`}>
+    <SideBarListItem># {name}</SideBarListItem>
+  </Link>
 );
 
 const User = ({ id, name }) => (
