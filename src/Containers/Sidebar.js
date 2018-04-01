@@ -15,10 +15,18 @@ class Sidebar extends Component {
     };
   }
 
-  handleAddChannelClick = () =>
+  handleAddChannelClick = e => {
+    if (e) {
+      e.preventDefault();
+    }
     this.setState({ openAddChannelModal: !this.state.openAddChannelModal });
-  handleInvitePeopleClick = () =>
+  };
+  handleInvitePeopleClick = e => {
+    if (e) {
+      e.preventDefault();
+    }
     this.setState({ openInvitePeopleModal: !this.state.openInvitePeopleModal });
+  };
 
   render() {
     const { team, teams } = this.props;

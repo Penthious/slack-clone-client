@@ -33,7 +33,7 @@ class Register extends Component {
 
     const { ok, errors } = response.data.register;
     if (ok) {
-      this.props.history.push('/');
+      this.props.history.push('/create/team');
     } else {
       const err = {};
       errors.forEach(({ path, message }) => {
