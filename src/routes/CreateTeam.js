@@ -28,8 +28,6 @@ class CreateTeam extends React.Component {
       variables: { name },
     });
 
-    console.log(response);
-
     const { ok, errors, team } = response.data.createTeam;
 
     if (ok) {

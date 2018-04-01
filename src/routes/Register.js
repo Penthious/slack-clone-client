@@ -31,8 +31,10 @@ class Register extends Component {
       variables: { username, email, password },
     });
 
-    const { ok, errors } = response.data.register;
+    const { ok, errors, token, refreshToken } = response.data.register;
     if (ok) {
+      localStorage.setItem('token', token);
+      localStorage.setItem('refreshToken', refreshToken);
       this.props.history.push('/create/team');
     } else {
       const err = {};
@@ -102,6 +104,8 @@ const registerMutation = gql`
   mutation($username: String!, $email: String!, $password: String!) {
     register(username: $username, email: $email, password: $password) {
       ok
+      token
+      refreshToken
       errors {
         path
         message

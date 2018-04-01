@@ -33,7 +33,9 @@ class Sidebar extends Component {
 
     const token = localStorage.getItem('token');
     const { user } = decode(token);
-    const { username } = user;
+    const { username, id } = user;
+    const isOwner = id === team.owner;
+
     return (
       <Fragment>
         <Teams teams={teams} />
@@ -45,6 +47,7 @@ class Sidebar extends Component {
           users={[{ id: 1, name: 'slackbot' }, { id: 2, name: 'user1' }]}
           onAddChannelClick={this.handleAddChannelClick}
           onInvitePeopleClick={this.handleInvitePeopleClick}
+          isOwner={isOwner}
         />
         <AddChannelModal
           open={this.state.openAddChannelModal}

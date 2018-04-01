@@ -87,5 +87,5 @@ export default graphql(messagesQuery, {
   variables: props => ({
     channelId: props.channelId,
   }),
-  options: { fetchPolicy: 'network-only' },
+  fetchPolicy: 'network-only',
 })(MessageContainer);
