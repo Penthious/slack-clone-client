@@ -4,7 +4,7 @@ import { withFormik } from 'formik';
 import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
 
-import { allTeamsQuery } from '../Graphql/team';
+import { meQuery } from '../Graphql/team';
 
 const AddChannelModal = ({
   open,
@@ -82,11 +82,11 @@ export default compose(
             return;
           }
 
-          const data = store.readQuery({ query: allTeamsQuery });
-          data.allTeams
+          const data = store.readQuery({ query: meQuery });
+          data.me.teams
             .filter(team => team.id === teamId)[0]
             .channels.push(createChannel.channel);
-          store.writeQuery({ query: allTeamsQuery, data });
+          store.writeQuery({ query: meQuery, data });
         },
       });
 

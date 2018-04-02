@@ -8,18 +8,16 @@ import Header from '../Components/Header';
 import SendMessage from '../Components/SendMessage';
 import Sidebar from '../Containers/Sidebar';
 import MessageContainer from '../Containers/MessageContainer';
-import { allTeamsQuery } from '../Graphql/team';
+import { meQuery } from '../Graphql/team';
 
 const ViewTeam = ({
   match: { params: { teamId, channelId } },
-  data: { loading, allTeams, inviteTeams },
+  data: { loading, me },
 }) => {
-  console.log(allTeams, inviteTeams);
-
   if (loading) {
     return null;
   }
-  const teams = [...allTeams, ...inviteTeams];
+  const { teams, username } = me;
   if (!teams.length) {
     return <Redirect to="/create/team" />;
   }
@@ -43,6 +41,7 @@ const ViewTeam = ({
           letter: t.name[0].toUpperCase(),
         }))}
         team={team}
+        username={username}
       />
       <Header channelName={channel.name} />
       <MessageContainer channelId={channel.id} />
@@ -51,4 +50,6 @@ const ViewTeam = ({
   );
 };
 
-export default graphql(allTeamsQuery)(ViewTeam);
+export default graphql(meQuery, { options: { fetchPolicy: 'network-only' } })(
+  ViewTeam,
+);
