@@ -1,5 +1,4 @@
 import React, { Fragment, Component } from 'react';
-import decode from 'jwt-decode';
 
 import Channels from '../Components/Channels';
 import Teams from '../Components/Teams';

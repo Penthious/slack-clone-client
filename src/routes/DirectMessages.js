@@ -10,10 +10,9 @@ import Sidebar from '../Containers/Sidebar';
 import MessageContainer from '../Containers/MessageContainer';
 import { meQuery } from '../Graphql/team';
 
-const ViewTeam = ({
-  match: { params: { teamId, channelId } },
+const DirectMessages = ({
+  match: { params: { teamId, userId, channelId } },
   data: { loading, me },
-  mutate,
 }) => {
   if (loading) {
     return null;
@@ -44,14 +43,9 @@ const ViewTeam = ({
         team={team}
         username={username}
       />
-      <Header channelName={channel.name} />
-      <MessageContainer channelId={channel.id} />
-      <SendMessage
-        placeholder={channel.name}
-        onSubmit={async text => {
-          await mutate({ variables: { text, channelId: channel.id } });
-        }}
-      />
+      {/* <Header channelName={channel.name} />
+      <MessageContainer channelId={channel.id} /> */}
+      <SendMessage onSubmit={() => {}} placeholder={userId} />
     </AppLayout>
   );
 };
@@ -65,4 +59,4 @@ const createMessageMutation = gql`
 export default compose(
   graphql(meQuery, { options: { fetchPolicy: 'network-only' } }),
   graphql(createMessageMutation),
-)(ViewTeam);
+)(DirectMessages);
