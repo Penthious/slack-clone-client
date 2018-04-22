@@ -12,3 +12,16 @@ export const messagesQuery = gql`
     }
   }
 `;
+
+export const directMessagesQuery = gql`
+  query($teamId: Int!, $userId: Int!) {
+    directMessages(teamId: $teamId, otherUserId: $userId) {
+      id
+      text
+      sender {
+        username
+      }
+      created_at
+    }
+  }
+`;

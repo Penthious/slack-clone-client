@@ -7,12 +7,15 @@ import AppLayout from '../Components/AppLayout';
 import Header from '../Components/Header';
 import SendMessage from '../Components/SendMessage';
 import Sidebar from '../Containers/Sidebar';
-import MessageContainer from '../Containers/MessageContainer';
+import DirectMessageContainer from '../Containers/DirectMessageContainer';
 import { meQuery } from '../Graphql/team';
 
 const DirectMessages = ({
-  match: { params: { teamId, userId, channelId } },
+  match: {
+    params: { teamId, userId, channelId },
+  },
   data: { loading, me },
+  mutate,
 }) => {
   if (loading) {
     return null;
@@ -43,20 +46,31 @@ const DirectMessages = ({
         team={team}
         username={username}
       />
-      {/* <Header channelName={channel.name} />
-      <MessageContainer channelId={channel.id} /> */}
-      <SendMessage onSubmit={() => {}} placeholder={userId} />
+      <Header channelName={'Some'} />
+      <DirectMessageContainer teamId={teamId} userId={userId} />
+      <SendMessage
+        onSubmit={async text => {
+          await mutate({
+            variables: {
+              text,
+              receiverId: userId,
+              teamId,
+            },
+          });
+        }}
+        placeholder={userId}
+      />
     </AppLayout>
   );
 };
 
-const createMessageMutation = gql`
-  mutation($channelId: Int!, $text: String!) {
-    createMessage(channelId: $channelId, text: $text)
+const createDirectMessageMutation = gql`
+  mutation($receiverId: Int!, $text: String!, $teamId: Int!) {
+    createDirectMessage(receiverId: $receiverId, teamId: $teamId, text: $text)
   }
 `;
 
 export default compose(
   graphql(meQuery, { options: { fetchPolicy: 'network-only' } }),
-  graphql(createMessageMutation),
+  graphql(createDirectMessageMutation),
 )(DirectMessages);
