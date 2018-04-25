@@ -42,6 +42,7 @@ class Sidebar extends Component {
   render() {
     const { team, teams, username } = this.props;
 
+    console.log(4, team);
     return (
       <Fragment>
         <Teams teams={teams} />
@@ -50,7 +51,7 @@ class Sidebar extends Component {
           username={username}
           channels={team.channels}
           teamId={team.id}
-          users={[{ id: 1, name: 'slackbot' }, { id: 2, name: 'user1' }]}
+          users={team.directMessageMembers}
           onAddChannelClick={this.handleAddChannelClick}
           onInvitePeopleClick={this.handleInvitePeopleClick}
           onDirectMessageOnClick={this.handleDirectMessageClick}

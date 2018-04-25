@@ -38,7 +38,7 @@ export default ({
             name="add circle"
           />
         </SideBarListHeader>
-        {users.map(User)}
+        {users.map(u => User(u, teamId))}
       </SideBarList>
     </div>
     <div>{isOwner && <a onClick={onInvitePeopleClick}>+ Invite People</a>}</div>
@@ -51,10 +51,12 @@ const Channel = ({ id, name }, teamId) => (
   </Link>
 );
 
-const User = ({ id, name }) => (
-  <SideBarListItem key={`user-${id}`}>
-    <Bubble /> {name}
-  </SideBarListItem>
+const User = ({ id, username }, teamId) => (
+  <Link key={`user-${id}`} to={`/view-team/user/${teamId}/${id}`}>
+    <SideBarListItem>
+      <Bubble /> {username}
+    </SideBarListItem>
+  </Link>
 );
 
 const Bubble = ({ on = true }) => (on ? <Green>●</Green> : '○');

@@ -9,11 +9,23 @@ export const meQuery = gql`
         admin
         id
         name
+        directMessageMembers {
+          id
+          username
+        }
         channels {
           id
           name
         }
       }
+    }
+  }
+`;
+
+export const getUserQuery = gql`
+  query($userId: Int!) {
+    getUser(userId: $userId) {
+      username
     }
   }
 `;

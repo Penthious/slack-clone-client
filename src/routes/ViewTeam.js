@@ -11,29 +11,35 @@ import MessageContainer from '../Containers/MessageContainer';
 import { meQuery } from '../Graphql/team';
 
 const ViewTeam = ({
-  match: { params: { teamId, channelId } },
+  match: {
+    params: { teamId, channelId },
+  },
   data: { loading, me },
   mutate,
 }) => {
+  console.log(2, loading);
   if (loading) {
     return null;
   }
+
   const { teams, username } = me;
   if (!teams.length) {
     return <Redirect to="/create/team" />;
   }
-  const team = teamId
-    ? teams.filter(team => team.id === parseInt(teamId, 10))[0]
-    : teams[0];
+
+  const team = teamId ? teams.filter(t => t.id === +teamId)[0] : teams[0];
   if (!team) {
     return <Redirect to="/view-team" />;
   }
-  const channel = parseInt(channelId, 10)
-    ? team.channels.filter(channel => channel.id === parseInt(channelId, 10))[0]
+
+  const channel = +channelId
+    ? team.channels.filter(c => c.id === +channelId)[0]
     : team.channels[0];
   if (!channel) {
     return <Redirect to="/view-team" />;
   }
+  console.log(3, me);
+
   return (
     <AppLayout>
       <Sidebar

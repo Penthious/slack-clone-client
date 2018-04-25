@@ -23,6 +23,12 @@ class Login extends React.Component {
     });
   }
 
+  componentWillMount() {
+    if (localStorage.getItem('token')) {
+      this.props.history.push('/view-team');
+    }
+  }
+
   onSubmit = async () => {
     const { email, password } = this;
     const response = await this.props.mutate({
@@ -34,6 +40,7 @@ class Login extends React.Component {
     const { ok, token, refreshToken, errors } = response.data.login;
 
     if (ok) {
+      console.log('login', token, refreshToken);
       localStorage.setItem('token', token);
       localStorage.setItem('refreshToken', refreshToken);
       this.props.history.push('/view-team');
@@ -53,7 +60,11 @@ class Login extends React.Component {
   };
 
   render() {
-    const { email, password, errors: { emailError, passwordError } } = this;
+    const {
+      email,
+      password,
+      errors: { emailError, passwordError },
+    } = this;
 
     return (
       <Container text>
