@@ -73,7 +73,19 @@ export default compose(
       if (ok) {
         close();
       } else {
-        setErrors(normalizeErrors(errors));
+        setErrors(
+          normalizeErrors(
+            errors.map(
+              e =>
+                e.message === 'user_id must be unique'
+                  ? {
+                      path: 'email',
+                      message: 'This user is already part of the team',
+                    }
+                  : e,
+            ),
+          ),
+        );
       }
       console.log(response);
     },

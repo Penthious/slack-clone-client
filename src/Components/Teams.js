@@ -5,6 +5,9 @@ import { Link } from 'react-router-dom';
 export default ({ teams }) => (
   <TeamWrapper>
     <TeamList>{teams.map(Team)}</TeamList>
+    <Link to="/create/team">
+      <TeamListItem>+</TeamListItem>
+    </Link>
   </TeamWrapper>
 );
 
