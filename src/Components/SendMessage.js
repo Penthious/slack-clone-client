@@ -1,7 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Input } from 'semantic-ui-react';
+import { Input, Button, Icon } from 'semantic-ui-react';
 import { withFormik } from 'formik';
+
+import FileUpload from './FileUpload';
 
 const ENTER_KEY = 13;
 const SendMessage = ({
@@ -13,6 +15,11 @@ const SendMessage = ({
   values,
 }) => (
   <SendMessageWrapper>
+    <FileUpload>
+      <Button icon>
+        <Icon name="plus" />
+      </Button>
+    </FileUpload>
     <Input
       name="message"
       value={values.message}
@@ -25,7 +32,6 @@ const SendMessage = ({
       onChange={handleChange}
       type="text"
       placeholder={`Message #${placeholder}`}
-      fluid
     />
   </SendMessageWrapper>
 );
@@ -34,6 +40,8 @@ const SendMessageWrapper = styled.div`
   grid-column: 3;
   grid-row: 3;
   margin: 20px;
+  display: grid;
+  grid-template-columns: 3% 97% 1fr;
 `;
 
 export default withFormik({
