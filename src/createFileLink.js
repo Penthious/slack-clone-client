@@ -87,7 +87,7 @@ export default ({ uri, includeExtensions, ...requestOptions } = {}) => {
         if (variables.hasOwnProperty('file')) {
           const stringBody = serializedBody;
           serializedBody = new FormData();
-          serializedBody.append('operations', JSON.stringify(stringBody));
+          serializedBody.append('operations', stringBody);
           serializedBody.append('file', variables.file);
         } else {
           myHeaders['content-type'] = 'application/json';

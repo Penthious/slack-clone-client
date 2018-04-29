@@ -25,3 +25,9 @@ export const directMessagesQuery = gql`
     }
   }
 `;
+
+export const createFileMessageMutation = gql`
+  mutation($channelId: Int!, $file: File) {
+    createMessage(channelId: $channelId, file: $file)
+  }
+`;
