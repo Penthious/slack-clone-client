@@ -51,7 +51,7 @@ const ViewTeam = ({
         username={username}
       />
       <Header channelName={channel.name} />
-      <MessageContainer channelId={channel.id} />
+      <MessageContainer channelId={channel.id} userId={me.id} />
       <SendMessage
         placeholder={channel.name}
         channelId={channel.id}

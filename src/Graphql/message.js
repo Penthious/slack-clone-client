@@ -6,6 +6,7 @@ export const messagesQuery = gql`
       id
       text
       user {
+        id
         username
       }
       created_at
@@ -19,6 +20,7 @@ export const directMessagesQuery = gql`
       id
       text
       sender {
+        id
         username
       }
       created_at

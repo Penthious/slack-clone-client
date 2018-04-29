@@ -42,7 +42,7 @@ const SendMessageWrapper = styled.div`
   grid-row: 3;
   margin: 20px;
   display: grid;
-  grid-template-columns: 3% 97% 1fr;
+  grid-template-columns: 50px 97% 1fr;
 `;
 
 export default withFormik({

@@ -12,6 +12,7 @@ const newChannelMessageSubscription = gql`
       id
       text
       user {
+        id
         username
       }
       created_at
@@ -49,6 +50,7 @@ class MessageContainer extends Component {
         if (!subscriptionData) {
           return prev;
         }
+        console.log(subscriptionData);
 
         return {
           ...prev,
@@ -57,35 +59,56 @@ class MessageContainer extends Component {
       },
     });
 
+  renderMessageGroup = (messages = [], userId) => (
+    <Comment.Group>
+      {messages.map(
+        m =>
+          console.log(m) || m.user.id === +userId
+            ? this.renderComment(m)
+            : this.renderComment(m, {
+                display: 'flex',
+                flexDirection: 'row-reverse',
+              }),
+      )}
+    </Comment.Group>
+  );
+
+  renderComment = (m, styles) => (
+    <Comment key={`message-${m.id}`} style={styles}>
+      <Comment.Content>
+        <Comment.Author as="a">{m.user.username}</Comment.Author>
+        <Comment.Metadata>
+          <div>{m.created_at}</div>
+        </Comment.Metadata>
+        <Comment.Text>{m.text}</Comment.Text>
+        <Comment.Actions>
+          <Comment.Action>Reply</Comment.Action>
+        </Comment.Actions>
+      </Comment.Content>
+    </Comment>
+  );
+
   render() {
     const {
       data: { loading, messages },
       channelId,
+      userId,
     } = this.props;
     if (loading) {
       return null;
     }
+    console.log(messages, 'messages are here');
     return (
-      <Messages>
-        <FileUpload channelId={channelId} disableClick>
-          <Comment.Group>
-            {messages.map(m => (
-              <Comment key={`message-${m.id}`}>
-                <Comment.Content>
-                  <Comment.Author as="a">{m.user.username}</Comment.Author>
-                  <Comment.Metadata>
-                    <div>{m.created_at}</div>
-                  </Comment.Metadata>
-                  <Comment.Text>{m.text}</Comment.Text>
-                  <Comment.Actions>
-                    <Comment.Action>Reply</Comment.Action>
-                  </Comment.Actions>
-                </Comment.Content>
-              </Comment>
-            ))}
-          </Comment.Group>
-        </FileUpload>
-      </Messages>
+      <FileUpload
+        channelId={channelId}
+        disableClick
+        style={{
+          display: 'flex',
+          flexDirection: 'column-reverse',
+        }}
+      >
+        <Messages>{this.renderMessageGroup(messages, userId)}</Messages>
+      </FileUpload>
     );
   }
 }
