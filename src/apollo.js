@@ -5,6 +5,7 @@ import { ApolloClient } from 'apollo-client';
 import { setContext } from 'apollo-link-context';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import createFileLink from './createFileLink';
+import env from './env';
 
 const httpLink = createFileLink({ uri: 'http://localhost:8080/graphql' });
 
@@ -42,7 +43,7 @@ const httpLinkWithMiddleware = afterwareLink.concat(
 );
 
 export const wsLink = new WebSocketLink({
-  uri: 'ws://localhost:8080/subscriptions',
+  uri: `ws://${env.URL}:${env.PORT}/subscriptions`,
   options: {
     reconnect: true,
     connectionParams: {

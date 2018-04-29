@@ -10,9 +10,12 @@ const newDirectMessageSubscription = gql`
     newDirectMessage(teamId: $teamId, userId: $userId) {
       id
       sender {
+        id
         username
       }
       text
+      url
+      filetype
       created_at
     }
   }

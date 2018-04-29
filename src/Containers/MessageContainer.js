@@ -5,6 +5,7 @@ import { Comment } from 'semantic-ui-react';
 import FileUpload from '../Components/FileUpload';
 import Messages from '../Components/Messages';
 import { messagesQuery } from '../Graphql/message';
+import RenderText from '../Components/RenderText';
 
 const newChannelMessageSubscription = gql`
   subscription($channelId: Int!) {
@@ -15,6 +16,8 @@ const newChannelMessageSubscription = gql`
         id
         username
       }
+      url
+      filetype
       created_at
     }
   }
@@ -80,13 +83,32 @@ class MessageContainer extends Component {
         <Comment.Metadata>
           <div>{m.created_at}</div>
         </Comment.Metadata>
-        <Comment.Text>{m.text}</Comment.Text>
+        {this.renderMessage(m)}
         <Comment.Actions>
           <Comment.Action>Reply</Comment.Action>
         </Comment.Actions>
       </Comment.Content>
     </Comment>
   );
+
+  renderMessage = ({ url, text, filetype }) => {
+    if (url) {
+      if (filetype.startsWith('image/')) {
+        return <img src={url} alt="filetype" />;
+      } else if (filetype === 'text/plain') {
+        return <RenderText url={url} />;
+      } else if (filetype.startsWith('audio/')) {
+        return (
+          <div>
+            <audio controls>
+              <source src={url} type={filetype} />
+            </audio>
+          </div>
+        );
+      }
+    }
+    return <Comment.Text>{text}</Comment.Text>;
+  };
 
   render() {
     const {
@@ -105,6 +127,7 @@ class MessageContainer extends Component {
         style={{
           display: 'flex',
           flexDirection: 'column-reverse',
+          maxHeight: '90vh',
         }}
       >
         <Messages>{this.renderMessageGroup(messages, userId)}</Messages>

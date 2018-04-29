@@ -9,6 +9,8 @@ export const messagesQuery = gql`
         id
         username
       }
+      url
+      filetype
       created_at
     }
   }
