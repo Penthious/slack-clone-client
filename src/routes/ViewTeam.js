@@ -17,7 +17,6 @@ const ViewTeam = ({
   data: { loading, me },
   mutate,
 }) => {
-  console.log(2, loading);
   if (loading) {
     return null;
   }
@@ -38,7 +37,6 @@ const ViewTeam = ({
   if (!channel) {
     return <Redirect to="/view-team" />;
   }
-  console.log(3, me);
 
   return (
     <AppLayout>

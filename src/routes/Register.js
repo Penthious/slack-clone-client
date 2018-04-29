@@ -9,6 +9,7 @@ import {
 } from 'semantic-ui-react';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
+import { wsLink } from '../apollo';
 
 class Register extends Component {
   constructor() {
@@ -35,6 +36,10 @@ class Register extends Component {
     if (ok) {
       localStorage.setItem('token', token);
       localStorage.setItem('refreshToken', refreshToken);
+      wsLink.subscriptionClient.client.close();
+      wsLink.subscriptionClient.connectionParams.token = token;
+      wsLink.subscriptionClient.connectionParams.refreshToken = refreshToken;
+      wsLink.subscriptionClient.connect();
       this.props.history.push('/create/team');
     } else {
       const err = {};
