@@ -56,12 +56,14 @@ const AddChannelModal = ({
           />
         </Form.Field>
         <Form.Field>
-          <MultiSelectUsers
-            placeholder="Select members to invite"
-            value={values.members}
-            teamId={teamId}
-            handleChange={(e, { value }) => setFieldValue('members', value)}
-          />
+          {!values.public ? (
+            <MultiSelectUsers
+              placeholder="Select members to invite"
+              value={values.members}
+              teamId={teamId}
+              handleChange={(e, { value }) => setFieldValue('members', value)}
+            />
+          ) : null}
         </Form.Field>
         <Form.Group width="equal">
           <Button
