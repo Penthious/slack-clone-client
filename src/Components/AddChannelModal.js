@@ -26,6 +26,7 @@ const AddChannelModal = ({
   values,
   setFieldValue,
   teamId,
+  currentUserId,
 }) => (
   <Modal
     open={open}
@@ -62,6 +63,7 @@ const AddChannelModal = ({
               value={values.members}
               teamId={teamId}
               handleChange={(e, { value }) => setFieldValue('members', value)}
+              currentUserId={currentUserId}
             />
           ) : null}
         </Form.Field>

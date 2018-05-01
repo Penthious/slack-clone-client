@@ -9,7 +9,7 @@ export default ({
   teamName,
   username,
   channels,
-  users,
+  dmChannels,
   onAddChannelClick,
   onDirectMessageOnClick,
   onInvitePeopleClick,
@@ -38,7 +38,7 @@ export default ({
             name="add circle"
           />
         </SideBarListHeader>
-        {users.map(u => User(u, teamId))}
+        {dmChannels.map(dmC => dmChannel(dmC, teamId))}
       </SideBarList>
     </div>
     <div>{isOwner && <a onClick={onInvitePeopleClick}>+ Invite People</a>}</div>
@@ -51,10 +51,10 @@ const Channel = ({ id, name }, teamId) => (
   </Link>
 );
 
-const User = ({ id, username }, teamId) => (
-  <Link key={`user-${id}`} to={`/view-team/user/${teamId}/${id}`}>
+const dmChannel = ({ id, name }, teamId) => (
+  <Link key={`dmchannel-${id}`} to={`/view-team/user/${teamId}/${id}`}>
     <SideBarListItem>
-      <Bubble /> {username}
+      <Bubble /> {name}
     </SideBarListItem>
   </Link>
 );

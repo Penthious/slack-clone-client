@@ -4,7 +4,13 @@ import { Dropdown } from 'semantic-ui-react';
 import { graphql, Query } from 'react-apollo';
 import { getTeamMembersQuery } from '../Graphql/team';
 
-const MultiSelectUsers = ({ handleChange, teamId, value, ...props }) => (
+const MultiSelectUsers = ({
+  handleChange,
+  teamId,
+  value,
+  currentUserId,
+  ...props
+}) => (
   <Query query={getTeamMembersQuery} variables={{ teamId }}>
     {({ loading, data: { getTeamMembers } }) => {
       if (loading) return null;
@@ -16,11 +22,13 @@ const MultiSelectUsers = ({ handleChange, teamId, value, ...props }) => (
           multiple
           search
           selection
-          options={getTeamMembers.map(tm => ({
-            key: tm.id,
-            value: tm.id,
-            text: tm.username,
-          }))}
+          options={getTeamMembers
+            .filter(tm => tm.id !== currentUserId)
+            .map(tm => ({
+              key: tm.id,
+              value: tm.id,
+              text: tm.username,
+            }))}
           {...props}
         />
       );
