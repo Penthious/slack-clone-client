@@ -12,7 +12,7 @@ const MultiSelectUsers = ({
   ...props
 }) => (
   <Query query={getTeamMembersQuery} variables={{ teamId }}>
-    {({ loading, data: { getTeamMembers } }) => {
+    {({ loading, data: { getTeamMembers = [] } }) => {
       if (loading) return null;
       return (
         <Dropdown

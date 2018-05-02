@@ -62,7 +62,7 @@ class MessageContainer extends Component {
       },
     });
 
-  renderMessageGroup = (messages = [], userId) => (
+  renderMessageGroup = (messages, userId) => (
     <Comment.Group>
       {messages.map(
         m =>

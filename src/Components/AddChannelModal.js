@@ -7,6 +7,7 @@ import {
   Modal,
 } from 'semantic-ui-react';
 import { compose, graphql } from 'react-apollo';
+import { withRouter } from 'react-router-dom';
 import { withFormik } from 'formik';
 import React from 'react';
 import gql from 'graphql-tag';
@@ -98,18 +99,20 @@ const createChannelMutation = gql`
       channel {
         id
         name
+        dm
       }
     }
   }
 `;
 
 export default compose(
+  withRouter,
   graphql(createChannelMutation),
   withFormik({
     mapPropsToValues: () => ({ name: '', public: true, members: [] }),
     handleSubmit: async (
       values,
-      { props: { teamId, mutate, close }, setSubmitting, setErrors },
+      { props: { teamId, mutate, close, history }, setSubmitting, setErrors },
     ) => {
       const response = await mutate({
         variables: {
@@ -126,24 +129,27 @@ export default compose(
               __typename: 'Channel',
               id: -1,
               name: values.name,
+              dm: values.public,
             },
           },
         },
-        update: (store, { data: { createChannel } }) => {
+        update: async (store, { data: { createChannel } }) => {
           if (!createChannel.ok) {
             return;
           }
+          console.log(createChannel.channel);
 
           const data = store.readQuery({ query: meQuery });
           data.me.teams
             .filter(team => team.id === teamId)[0]
             .channels.push(createChannel.channel);
-          store.writeQuery({ query: meQuery, data });
+          await store.writeQuery({ query: meQuery, data });
+          history.push(`/view-team/${teamId}/${createChannel.channel.id}`);
         },
       });
 
-      setSubmitting(false);
-      close();
+      // setSubmitting(false);
+      // close();
     },
   }),
 )(AddChannelModal);
