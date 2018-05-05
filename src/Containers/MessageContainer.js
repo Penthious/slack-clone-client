@@ -23,12 +23,19 @@ const newChannelMessageSubscription = gql`
   }
 `;
 class MessageContainer extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      hasMoreItems: true,
+      fetching: false,
+    };
+  }
   componentWillMount() {
     this.unsubscribe = this.subscribe(this.props.channelId);
   }
 
   componentWillReceiveProps({ channelId }) {
-    console.log(channelId);
     if (this.props.channelId !== channelId) {
       if (this.unsubscribe) {
         this.unsubscribe();
@@ -53,20 +60,68 @@ class MessageContainer extends Component {
         if (!subscriptionData) {
           return prev;
         }
-        console.log(subscriptionData);
+        if (this.scroller) {
+          this.scroller.scrollTop = this.scroller.scrollHeight;
+          console.log(this.scroller.scrollHeight);
+          console.log(this.scroller.scrollTop);
+          console.log(this.scroller.height);
+        }
 
         return {
           ...prev,
-          messages: [...prev.messages, subscriptionData.data.newChannelMessage],
+          messages: [subscriptionData.data.newChannelMessage, ...prev.messages],
         };
       },
     });
 
+  handleScroll = () => {
+    if (this.state.fetching) {
+      return false;
+    }
+    const {
+      data: { messages, fetchMore },
+      channelId,
+    } = this.props;
+
+    if (
+      this.scroller &&
+      this.scroller.scrollTop < 200 &&
+      this.state.hasMoreItems &&
+      messages.length >= 35
+    ) {
+      this.setState({ fetching: true });
+      fetchMore({
+        variables: {
+          channelId,
+          cursor: messages[messages.length - 1].id,
+        },
+        updateQuery: (previousResult, { fetchMoreResult }) => {
+          this.setState({ fetching: false });
+          if (!fetchMoreResult) {
+            return previousResult;
+          }
+          if (fetchMoreResult.messages.length < 35) {
+            this.setState({ hasMoreItems: false });
+          }
+          return {
+            ...previousResult,
+            messages: [...previousResult.messages, ...fetchMoreResult.messages],
+          };
+        },
+      });
+    }
+  };
+
   renderMessageGroup = (messages, userId) => (
-    <Comment.Group>
+    <Comment.Group
+      style={{
+        display: 'flex',
+        flexDirection: 'column-reverse',
+      }}
+    >
       {messages.map(
         m =>
-          console.log(m) || m.user.id === +userId
+          m.user.id === +userId
             ? this.renderComment(m)
             : this.renderComment(m, {
                 display: 'flex',
@@ -119,25 +174,29 @@ class MessageContainer extends Component {
     if (loading) {
       return null;
     }
-    console.log(messages, 'messages are here');
     return (
-      <FileUpload
-        channelId={channelId}
-        disableClick
+      <div
         style={{
           display: 'flex',
           flexDirection: 'column-reverse',
           maxHeight: '90vh',
+          overflow: 'auto',
         }}
+        onScroll={this.handleScroll}
+        ref={scroller => (this.scroller = scroller)}
       >
-        <Messages>{this.renderMessageGroup(messages, userId)}</Messages>
-      </FileUpload>
+        <FileUpload channelId={channelId} disableClick>
+          <Messages>{this.renderMessageGroup(messages, userId)}</Messages>
+        </FileUpload>
+      </div>
     );
   }
 }
 export default graphql(messagesQuery, {
-  variables: props => ({
-    channelId: props.channelId,
+  options: props => ({
+    fetchPolicy: 'network-only',
+    variables: {
+      channelId: props.channelId,
+    },
   }),
-  fetchPolicy: 'network-only',
 })(MessageContainer);

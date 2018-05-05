@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
 export const messagesQuery = gql`
-  query($channelId: Int!) {
-    messages(channelId: $channelId) {
+  query($channelId: Int!, $cursor: String) {
+    messages(channelId: $channelId, cursor: $cursor) {
       id
       text
       user {
